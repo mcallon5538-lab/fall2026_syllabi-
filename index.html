@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Prof. Callon · Course Syllabi</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:ital,wght@0,400;0,600;0,700;0,800;1,400&family=IBM+Plex+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --primary:#1C3557;
+    --primary-deep:#122540;
+    --paper:#FFFFFF;
+    --board:#F5F7FA;
+    --ink:#1A1A1A;
+    --muted:#6B7684;
+    --rule:#C9D3E0;
+    --rule-strong:#98A8BE;
+    --line-5c:#1C3557;
+    --line-5c-soft:#E7ECF3;
+    --line-6f:#155E52;
+    --line-6f-soft:#E2F0EC;
+    --live:#1E7A4C;
+    --live-soft:#E1F3E8;
+    --font-head:'Source Sans 3',sans-serif;
+    --font-mono:'IBM Plex Mono',monospace;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{
+    background:var(--board);
+    color:var(--ink);
+    font-family:var(--font-head);
+    -webkit-font-smoothing:antialiased;
+  }
+
+  /* ---------------- terminal header ---------------- */
+  .terminal-bar{
+    background:linear-gradient(180deg,var(--primary) 0%,var(--primary-deep) 100%);
+    color:#EAF0F8;
+    padding:22px 28px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    flex-wrap:wrap;
+    gap:10px;
+  }
+  .terminal-id{
+    display:flex;
+    align-items:baseline;
+    gap:12px;
+  }
+  .terminal-id .mark{
+    font-family:var(--font-mono);
+    font-weight:700;
+    font-size:12px;
+    letter-spacing:0.14em;
+    background:rgba(255,255,255,0.12);
+    padding:4px 9px;
+    border-radius:4px;
+    border:1px solid rgba(255,255,255,0.22);
+  }
+  .terminal-id h1{
+    margin:0;
+    font-size:22px;
+    font-weight:800;
+    letter-spacing:0.01em;
+  }
+  .terminal-clock{
+    font-family:var(--font-mono);
+    font-size:13px;
+    letter-spacing:0.06em;
+    color:#B9C7DC;
+    text-align:right;
+    line-height:1.5;
+  }
+  .terminal-clock .term-label{
+    font-size:10px;
+    letter-spacing:0.16em;
+    text-transform:uppercase;
+    color:#7F93AE;
+  }
+
+  /* ---------------- board frame ---------------- */
+  .board-wrap{
+    max-width:900px;
+    margin:0 auto;
+    padding:36px 24px 60px;
+  }
+  .board-head{
+    display:flex;
+    align-items:baseline;
+    justify-content:space-between;
+    margin-bottom:6px;
+    flex-wrap:wrap;
+    gap:8px;
+  }
+  .board-head h2{
+    font-size:13px;
+    font-weight:800;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    color:var(--primary);
+    margin:0;
+  }
+  .board-head .term-sub{
+    font-family:var(--font-mono);
+    font-size:11.5px;
+    color:var(--muted);
+    letter-spacing:0.04em;
+  }
+  .board{
+    background:var(--paper);
+    border:1px solid var(--rule);
+    border-radius:10px;
+    overflow:hidden;
+    box-shadow:0 1px 2px rgba(20,30,50,0.04), 0 10px 30px rgba(20,30,50,0.05);
+  }
+  .board-col-labels{
+    display:grid;
+    grid-template-columns:64px 1fr 168px 108px 128px;
+    gap:0;
+    padding:12px 22px;
+    font-family:var(--font-mono);
+    font-size:10.5px;
+    font-weight:600;
+    letter-spacing:0.12em;
+    text-transform:uppercase;
+    color:var(--muted);
+    border-bottom:1px solid var(--rule);
+    background:var(--board);
+  }
+  .board-col-labels span:nth-child(4),
+  .board-col-labels span:nth-child(5){text-align:right}
+
+  /* ---------------- departure rows ---------------- */
+  .dep-row{
+    display:grid;
+    grid-template-columns:64px 1fr 168px 108px 128px;
+    align-items:center;
+    gap:0;
+    padding:18px 22px;
+    border-bottom:1px solid var(--rule);
+    text-decoration:none;
+    color:inherit;
+    transition:background .15s ease;
+    animation:flip-in .5s cubic-bezier(.2,.8,.2,1) both;
+    animation-delay:var(--d,0s);
+  }
+  .dep-row:last-child{border-bottom:none}
+  .dep-row:hover{background:var(--board)}
+  .dep-row:focus-visible{
+    outline:3px solid var(--primary);
+    outline-offset:-3px;
+  }
+
+  .dep-code{
+    font-family:var(--font-mono);
+    font-weight:700;
+    font-size:15px;
+    display:flex;
+    align-items:center;
+    gap:8px;
+  }
+  .dep-code .dot{
+    width:9px;height:9px;border-radius:50%;
+    flex:none;
+  }
+  .course-5c .dep-code .dot{background:var(--line-5c)}
+  .course-5c .dep-code{color:var(--line-5c)}
+  .course-6f .dep-code .dot{background:var(--line-6f)}
+  .course-6f .dep-code{color:var(--line-6f)}
+
+  .dep-title{padding-right:16px}
+  .dep-title .name{
+    font-weight:700;
+    font-size:15.5px;
+    color:var(--ink);
+    margin-bottom:2px;
+  }
+  .dep-title .meta{
+    font-size:12.5px;
+    color:var(--muted);
+  }
+
+  .dep-meeting{
+    font-family:var(--font-mono);
+    font-size:12.5px;
+    color:var(--muted);
+    line-height:1.5;
+  }
+  .dep-meeting .rm{color:var(--ink);font-weight:600}
+
+  .dep-updated{
+    font-family:var(--font-mono);
+    font-size:11.5px;
+    color:var(--muted);
+    text-align:right;
+    line-height:1.5;
+  }
+  .dep-updated .term-label{
+    display:block;
+    font-size:9.5px;
+    letter-spacing:0.1em;
+    text-transform:uppercase;
+    color:#9AA6B4;
+  }
+
+  .dep-status{
+    display:flex;
+    justify-content:flex-end;
+  }
+  .status-pill{
+    font-family:var(--font-mono);
+    font-size:10.5px;
+    font-weight:700;
+    letter-spacing:0.08em;
+    padding:5px 11px;
+    border-radius:20px;
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    background:var(--live-soft);
+    color:var(--live);
+  }
+  .status-pill .blip{
+    width:6px;height:6px;border-radius:50%;
+    background:var(--live);
+  }
+
+  /* ---------------- add-course affordance ---------------- */
+  .dep-row.ghost{
+    color:var(--muted);
+    font-size:13.5px;
+    justify-content:flex-start;
+    display:flex;
+    gap:10px;
+    align-items:center;
+    animation:none;
+  }
+  .dep-row.ghost .plus{
+    width:22px;height:22px;border-radius:50%;
+    border:1.5px dashed var(--rule-strong);
+    display:flex;align-items:center;justify-content:center;
+    font-size:14px;color:var(--rule-strong);
+    flex:none;
+  }
+
+  @keyframes flip-in{
+    0%{opacity:0; transform:rotateX(-90deg); transform-origin:top center;}
+    60%{opacity:1;}
+    100%{opacity:1; transform:rotateX(0deg);}
+  }
+  @media (prefers-reduced-motion: reduce){
+    .dep-row{animation:none}
+  }
+
+  /* ---------------- footnote ---------------- */
+  .board-foot{
+    margin-top:14px;
+    font-size:12px;
+    color:var(--muted);
+    display:flex;
+    justify-content:space-between;
+    gap:12px;
+    flex-wrap:wrap;
+  }
+  .board-foot a{color:var(--primary); font-weight:600; text-decoration:none}
+  .board-foot a:hover{text-decoration:underline}
+
+  .preview-note{
+    max-width:900px;
+    margin:26px auto 0;
+    padding:14px 24px;
+    font-size:13px;
+    color:#7A5B12;
+    background:#FBF3DC;
+    border:1px solid #EBD9A0;
+    border-radius:8px;
+  }
+  .preview-note strong{color:#5B4708}
+
+  /* ---------------- mobile ---------------- */
+  @media (max-width:640px){
+    .board-col-labels{display:none}
+    .dep-row{
+      grid-template-columns:1fr;
+      row-gap:8px;
+      padding:18px 18px;
+    }
+    .dep-updated,.dep-status{
+      text-align:left;
+      justify-content:flex-start;
+    }
+    .dep-updated .term-label{display:inline;margin-right:6px}
+    .terminal-bar{padding:18px 18px}
+    .board-wrap{padding:26px 14px 40px}
+  }
+</style>
+</head>
+<body>
+
+  <div class="terminal-bar">
+    <div class="terminal-id">
+      <span class="mark">MC · ENG</span>
+      <h1>Prof. Callon — Course Syllabi</h1>
+    </div>
+    <div class="terminal-clock">
+      <span class="term-label">Fall Term</span>
+      2026
+    </div>
+  </div>
+
+  <div class="board-wrap">
+    <div class="board-head">
+      <h2>Departures — Fall 2026</h2>
+      <span class="term-sub">2 courses live</span>
+    </div>
+
+    <div class="board">
+      <div class="board-col-labels">
+        <span>Sec.</span>
+        <span>Course</span>
+        <span>Meets</span>
+        <span>Updated</span>
+        <span>Status</span>
+      </div>
+
+      <a class="dep-row course-5c" href="eng102-5c.html" style="--d:.05s">
+        <span class="dep-code"><span class="dot"></span>5C</span>
+        <span class="dep-title">
+          <span class="name">English 102 · Rhetoric II</span>
+          <span class="meta">Michael Callon</span>
+        </span>
+        <span class="dep-meeting">Tue/Thu<br><span class="rm">11:00–12:30 · Rm 313C</span></span>
+        <span class="dep-updated" data-course="eng102-5c"><span class="term-label">Last edit</span>Aug 19</span>
+        <span class="dep-status"><span class="status-pill"><span class="blip"></span>LIVE</span></span>
+      </a>
+
+      <a class="dep-row course-6f" href="eng102-6f.html" style="--d:.14s">
+        <span class="dep-code"><span class="dot"></span>6F</span>
+        <span class="dep-title">
+          <span class="name">English 102 · Rhetoric II</span>
+          <span class="meta">Michael Callon</span>
+        </span>
+        <span class="dep-meeting">Tue/Thu<br><span class="rm">12:30–1:45 · Rm 320B</span></span>
+        <span class="dep-updated" data-course="eng102-6f"><span class="term-label">Last edit</span>Aug 19</span>
+        <span class="dep-status"><span class="status-pill"><span class="blip"></span>LIVE</span></span>
+      </a>
+
+      <div class="dep-row ghost">
+        <span class="plus">+</span>
+        <span>More sections appear here as you add them</span>
+      </div>
+    </div>
+
+    <div class="board-foot">
+      <span>Morton College · Department of English</span>
+      <a href="mailto:michael.callon@morton.edu">michael.callon@morton.edu</a>
+    </div>
+  </div>
+
+
+</body>
+</html>
