@@ -1,0 +1,41 @@
+yaml
+name: Build syllabus pages
+
+# Runs automatically whenever a master file changes, and can also be run
+# by hand from the Actions tab ("Run workflow") if you ever need to force
+# a rebuild.
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'masters/**'
+      - 'scripts/**'
+  workflow_dispatch: {}
+
+# Needed so the workflow is allowed to commit the rebuilt pages back to
+# the repository.
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: Build public pages from masters/
+        run: python scripts/build.py
+
+      - name: Commit and push the rebuilt pages, if anything changed
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "Auto-build: publish updated syllabus page(s)"
+          file_pattern: '*.html'
+          commit_user_name: 'syllabus-bot'
+          commit_user_email: 'actions@users.noreply.github.com'
